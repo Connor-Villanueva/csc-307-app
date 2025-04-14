@@ -68,6 +68,10 @@ app.get("/users", (req, res) => {
         result = result.filter((user) => user["job"] === job);
     }
 
+
+    if (result.length == 0) res.status(404);
+    else res.status(200);
+
     res.send({user_list: result});
 });
 
@@ -84,20 +88,27 @@ app.get("/users/:id", (req, res) => {
 });
 
 const addUser = (user) => {
-    let check = users["users_list"].find((id) => user["id"] === id);
+    let check = users["users_list"].find(u => user["id"] === u["id"]);
+    console.log(check);
     if (check == undefined)
     {
         users["users_list"].push(user);
-        return user;
+        return true;
     }
     
-    return [];
+    return false;
 };
 
 app.post("/users", (req, res) => {
     const userToAdd = req.body;
-    addUser(userToAdd);
-    res.send(userToAdd);
+    
+    if (!addUser(userToAdd)) {
+        res.status(400);
+        res.send();
+    }
+    else {
+        res.send(userToAdd);
+    }
 });
 
 const deleteUserById = (id) => {
