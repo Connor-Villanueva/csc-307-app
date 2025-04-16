@@ -7,6 +7,7 @@ function TableHeader()
     return (
         <thead>
             <tr>
+                <th>Id</th>
                 <th>Name</th>
                 <th>Job</th>
                 <th>Remove Character</th>
@@ -21,6 +22,7 @@ function TableBody(props)
     {
         return (
             <tr key={index}>
+                <td>{row.id}</td>
                 <td>{row.name}</td>
                 <td>{row.job}</td>
                 <td>

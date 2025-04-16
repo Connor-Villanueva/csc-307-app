@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Table from "./table";
 import Form from "./form";
 
@@ -6,19 +6,75 @@ function MyApp()
 {
     const [characters, setCharacters] = useState([]);
 
-    function removeOneCharacter(index)
-    {
-        const updated = characters.filter((character, i) =>
-        {
-            return i != index;
+    function fetchUsers() {
+        const promise = fetch("http://localhost:8000/users");
+        return promise;
+    };
+
+    useEffect(() => {
+        fetchUsers()
+          .then((res) => res.json())
+          .then((json) => setCharacters(json["users_list"]))
+          .catch((error) => {
+            console.log(error);
+          });
+      }, []);
+
+    function postUser(person) {
+        const promise = fetch("http://localhost:8000/users", {
+            method : "POST",
+            headers : {
+                "Content-Type" : "application/json"
+            },
+            body : JSON.stringify(person)
         });
-        setCharacters(updated);
+
+        return promise;
+    };
+
+    function updateList(person) {
+        postUser(person)
+            .then((res) => {
+                if (res.status == 201) 
+                    return res.json();
+                else if (res.status == 400) 
+                    throw new Error("User already exists");
+                else
+                    throw new Error("Cannot add user");
+
+            })
+            .then((user) => setCharacters([...characters, user]))
+            .catch((error) => {
+                console.log(error);
+            });
+    };
+
+    function deleteUser(person) {
+        const promise = fetch(`http://localhost:8000/users/${person["id"]}`, {
+            method : "DELETE",
+            hedaers : {
+                "Content-Type" : "application/json"
+            },
+            body : JSON.stringify(person)
+        });
+        return promise;
     }
 
-    function updateList(person)
-    {
-        setCharacters([...characters, person]);
-    }
+    function removeOneCharacter(index) {
+        const person = characters[index];
+        console.log(person.id);
+        deleteUser(person)
+            .then((res) => {
+                if (res.status == 204) {
+                    const updated = characters.filter((user) => user["id"] != person["id"]);
+                    setCharacters(updated);
+                }
+                else throw new Error("Cannot delete user");
+            })
+            .catch((error) => {
+                console.log(error);
+            })
+    };
 
     return (
         <div className="container">
@@ -31,6 +87,7 @@ function MyApp()
             />
         </div>
     );
+    
 }
 
 export default MyApp;

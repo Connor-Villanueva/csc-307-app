@@ -1,9 +1,11 @@
 // backend.js
 import express from "express";
+import cors from "cors";
 
 const app = express();
 const port = 8000;
 
+app.use(cors());
 app.use(express.json());
 
 app.get("/", (req, res) => {
@@ -51,6 +53,7 @@ app.get("/users", (req, res) => {
     const id = req.query.id;
     const job = req.query.job;
 
+
     let result = users["users_list"];
     
     if (name != undefined) {
@@ -66,11 +69,10 @@ app.get("/users", (req, res) => {
         result = result.filter((user) => user["job"] === job);
     }
 
-
     if (result.length == 0) res.status(404);
     else res.status(200);
 
-    res.send({user_list: result});
+    res.send({users_list: result});
 });
 
 
@@ -87,7 +89,6 @@ app.get("/users/:id", (req, res) => {
 
 const addUser = (user) => {
     let check = users["users_list"].find(u => user["id"] === u["id"]);
-    console.log(check);
     if (check == undefined)
     {
         users["users_list"].push(user);
@@ -98,29 +99,42 @@ const addUser = (user) => {
 };
 
 app.post("/users", (req, res) => {
-    const userToAdd = req.body;
-    
-    if (!addUser(userToAdd)) {
-        res.status(400);
-        res.send();
+    const body = req.body;
+    const userToAdd = {
+        id : Math.round(Math.random()*10000),
+        name : body["name"],
+        job : body["job"]
     }
-    else {
+    
+    if (addUser(userToAdd)) {
         res.status(201);
         res.send(userToAdd);
+    }
+    else {
+        res.status(400);
+        res.send();
     }
 });
 
 const deleteUserById = (id) => {
-    users["users_list"] = users["users_list"].filter(
-        (user) => user["id"] !== id
+
+    const newList = users["users_list"].filter(
+        (user) => user.id != id
     );
+
+    if (users["users_list"] != newList)
+    {
+        users["users_list"] = newList;
+        return true
+    }
+    return false
 };
 
 app.delete("/users/:id", (req, res) => {
     const idToDelete = req.params.id;
-    deleteUserById(idToDelete);
-
-    res.status(204);
-    res.send();
+    if (deleteUserById(idToDelete)) {
+        res.status(204).send()
+    }
+    else res.status(404).send();
 });
 
