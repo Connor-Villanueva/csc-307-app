@@ -9,8 +9,9 @@ Installing and building your first React app.
 Reusing the environment from IE0, creating a table of characters, with attributes `Name` and `Job`, with add/remove functionality
 
 
-## IE2: My First REST API &#x2612;
+## IE2: My First REST API &#x2611;
 
+Using the Express framework to start building a REST API.
 
 ## IE3: Linking Frontend to Backend &#x2612;
 
