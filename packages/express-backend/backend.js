@@ -70,7 +70,7 @@ app.get("/users", (req, res) => {
     if (result.length == 0) res.status(404);
     else res.status(200);
 
-    res.send({user_list: result});
+    res.send({users_list: result});
 });
 
 
