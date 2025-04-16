@@ -52,8 +52,6 @@ app.get("/users", (req, res) => {
     const job = req.query.job;
 
     let result = users["users_list"];
-
-    console.log(result);
     
     if (name != undefined) {
         console.log(`Looking for name: ${name}`);
@@ -107,6 +105,7 @@ app.post("/users", (req, res) => {
         res.send();
     }
     else {
+        res.status(201);
         res.send(userToAdd);
     }
 });
@@ -120,6 +119,8 @@ const deleteUserById = (id) => {
 app.delete("/users/:id", (req, res) => {
     const idToDelete = req.params.id;
     deleteUserById(idToDelete);
+
+    res.status(204);
     res.send();
 });
 
