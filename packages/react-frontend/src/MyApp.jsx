@@ -35,9 +35,9 @@ function MyApp()
     function updateList(person) {
         postUser(person)
             .then((res) => {
-                if (res.status == 201) 
+                if (res.status === 201) 
                     return res.json();
-                else if (res.status == 400) 
+                else if (res.status === 400) 
                     throw new Error("User already exists");
                 else
                     throw new Error("Cannot add user");

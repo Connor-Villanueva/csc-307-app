@@ -101,7 +101,7 @@ const addUser = (user) => {
 app.post("/users", (req, res) => {
     const body = req.body;
     const userToAdd = {
-        id : Math.round(Math.random()*10000),
+        id : Math.round(Math.random()*100_000),
         name : body["name"],
         job : body["job"]
     }
