@@ -1,7 +1,7 @@
 // src/main.jsx
 import React from "react";
 import ReactDOMClient from "react-dom/client";
-import MyApp from "./myapp";
+import MyApp from "./MyApp";
 import "./main.css";
 
 // Creating the container
