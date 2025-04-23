@@ -59,7 +59,7 @@ function MyApp()
                 "Content-Type" : "application/json"
             },
             body : JSON.stringify(person)
-        });
+        })
         return promise;
     }
 

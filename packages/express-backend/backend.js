@@ -3,7 +3,7 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
-import db from "./services/user-service.js";
+import userServices from "./services/user-service.js";
 
 const app = express();
 const port = 8000;
@@ -25,7 +25,7 @@ app.get("/users", (req, res) => {
     const id = req.query.id;
     const job = req.query.job;
     
-    db.getUsers(name, job)
+    userServices.getUsers(name, job)
         .then((result) => {
             res.send({users_list: result});
         })
@@ -36,7 +36,7 @@ app.get("/users", (req, res) => {
 
 app.get("/users/:id", (req, res) => {
     const id = req.params.id;
-    let result = db.findUserById(id);
+    let result = userServices.findUserById(id);
     if (result === undefined) {
         res.status(404).send("Resource not found.");
     } else {
@@ -48,9 +48,9 @@ app.get("/users/:id", (req, res) => {
 app.post("/users", (req, res) => {
     const userToAdd = req.body;
 
-    db.addUser(userToAdd)
+    userServices.addUser(userToAdd)
         .then((user) => {
-            res.status(201).send(user); // addUser throws error if invalid
+            res.status(201).send(user); // addUser throws error if invalid schema
         }).catch((error) => {
             console.log(error);
             res.status(400).send();
@@ -59,8 +59,7 @@ app.post("/users", (req, res) => {
 
 
 app.delete("/users/:id", (req, res) => {
-    console.log(req.params.id);
-    db.deleteUser(req.params.id)
+    userServices.deleteUser(req.params.id)
         .then(() => {
             res.status(204).send();
         })
